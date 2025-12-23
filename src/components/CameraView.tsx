@@ -7,7 +7,7 @@ interface CameraViewProps {
   onCapture: (imageDataUrl: string) => void;
 }
 
-type CameraMode = 'instant' | 'film-strip' | 'vintage' | 'daylight';
+type CameraMode = 'instant' | 'vintage' | 'daylight';
 
 const cameraModes = [
   { id: 'instant', name: 'Instant', icon: Aperture },
@@ -82,7 +82,6 @@ export const CameraView = ({ isOpen, onClose, onCapture }: CameraViewProps) => {
 
     const video = videoRef.current;
     
-    // Double-check video dimensions
     if (video.videoWidth === 0 || video.videoHeight === 0) {
       console.error('Video not ready');
       return;
@@ -96,12 +95,17 @@ export const CameraView = ({ isOpen, onClose, onCapture }: CameraViewProps) => {
         if (prev <= 1) {
           clearInterval(countdownInterval);
           
-          // Capture the photo
           const canvas = canvasRef.current!;
           const ctx = canvas.getContext('2d')!;
           
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
+          
+          // Mirror the image for front camera
+          if (facingMode === 'user') {
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+          }
           
           // Apply mode-specific filters
           if (cameraMode === 'vintage') {
@@ -114,7 +118,8 @@ export const CameraView = ({ isOpen, onClose, onCapture }: CameraViewProps) => {
           
           ctx.drawImage(video, 0, 0);
           
-          // Reset filter before getting image data
+          // Reset transformations
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.filter = 'none';
           
           // Add film grain effect
@@ -123,7 +128,7 @@ export const CameraView = ({ isOpen, onClose, onCapture }: CameraViewProps) => {
             const data = imageData.data;
             
             for (let i = 0; i < data.length; i += 4) {
-              const noise = (Math.random() - 0.5) * 15;
+              const noise = (Math.random() - 0.5) * 12;
               data[i] = Math.min(255, Math.max(0, data[i] + noise));
               data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + noise));
               data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + noise));
@@ -191,7 +196,7 @@ export const CameraView = ({ isOpen, onClose, onCapture }: CameraViewProps) => {
               <div className="absolute bottom-4 right-4 w-8 h-8 border-r-4 border-b-4 border-background/40 rounded-br-lg" />
             </div>
 
-            {/* Video feed */}
+            {/* Video feed - mirrored for front camera */}
             <video
               ref={videoRef}
               autoPlay
@@ -200,6 +205,7 @@ export const CameraView = ({ isOpen, onClose, onCapture }: CameraViewProps) => {
               onLoadedData={handleVideoReady}
               className={`
                 w-full h-full object-cover
+                ${facingMode === 'user' ? 'scale-x-[-1]' : ''}
                 ${cameraMode === 'vintage' ? 'sepia-[0.3] saturate-[0.8]' : ''}
                 ${cameraMode === 'daylight' ? 'brightness-110 saturate-105' : ''}
               `}
@@ -267,7 +273,6 @@ export const CameraView = ({ isOpen, onClose, onCapture }: CameraViewProps) => {
                 <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center transition-transform group-hover:scale-95 group-active:scale-90">
                   <Camera className="w-8 h-8 text-primary-foreground" />
                 </div>
-                {/* Pulse ring */}
                 {isVideoReady && !isCountingDown && (
                   <div className="absolute inset-0 rounded-full border-4 border-background/50 animate-ripple" />
                 )}

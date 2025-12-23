@@ -9,13 +9,85 @@ interface Theme {
   preview: string;
 }
 
+interface Theme {
+  id: string;
+  name: string;
+  primary: string;
+  accent: string;
+  background: string;
+  card: string;
+  muted: string;
+  cream: string;
+  preview: string;
+}
+
 const themes: Theme[] = [
-  { id: 'vintage', name: 'Vintage Camera', primary: '24 60% 65%', accent: '340 35% 75%', preview: 'bg-[hsl(24,60%,65%)]' },
-  { id: 'pastel', name: 'Soft Pastel', primary: '340 35% 75%', accent: '200 30% 85%', preview: 'bg-[hsl(340,35%,75%)]' },
-  { id: 'ocean', name: 'Ocean Dream', primary: '200 40% 60%', accent: '180 35% 75%', preview: 'bg-[hsl(200,40%,60%)]' },
-  { id: 'film', name: 'Film Lab', primary: '45 50% 55%', accent: '30 40% 70%', preview: 'bg-[hsl(45,50%,55%)]' },
-  { id: 'rose', name: 'Dusty Rose', primary: '350 35% 65%', accent: '20 30% 80%', preview: 'bg-[hsl(350,35%,65%)]' },
-  { id: 'sage', name: 'Quiet Sage', primary: '140 25% 55%', accent: '100 20% 75%', preview: 'bg-[hsl(140,25%,55%)]' },
+  { 
+    id: 'vintage', 
+    name: 'Vintage Camera', 
+    primary: '24 60% 65%', 
+    accent: '340 35% 75%', 
+    background: '36 33% 97%',
+    card: '40 30% 96%',
+    muted: '36 20% 92%',
+    cream: '40 30% 96%',
+    preview: 'bg-[hsl(24,60%,65%)]' 
+  },
+  { 
+    id: 'pastel', 
+    name: 'Soft Pastel', 
+    primary: '340 35% 75%', 
+    accent: '200 30% 85%', 
+    background: '340 30% 97%',
+    card: '340 25% 96%',
+    muted: '340 20% 93%',
+    cream: '340 25% 96%',
+    preview: 'bg-[hsl(340,35%,75%)]' 
+  },
+  { 
+    id: 'ocean', 
+    name: 'Ocean Dream', 
+    primary: '200 40% 60%', 
+    accent: '180 35% 75%', 
+    background: '200 30% 96%',
+    card: '200 25% 95%',
+    muted: '200 20% 92%',
+    cream: '200 25% 95%',
+    preview: 'bg-[hsl(200,40%,60%)]' 
+  },
+  { 
+    id: 'film', 
+    name: 'Film Lab', 
+    primary: '45 50% 55%', 
+    accent: '30 40% 70%', 
+    background: '45 35% 96%',
+    card: '45 30% 95%',
+    muted: '45 25% 92%',
+    cream: '45 30% 95%',
+    preview: 'bg-[hsl(45,50%,55%)]' 
+  },
+  { 
+    id: 'rose', 
+    name: 'Dusty Rose', 
+    primary: '350 35% 65%', 
+    accent: '20 30% 80%', 
+    background: '350 25% 97%',
+    card: '350 20% 96%',
+    muted: '350 15% 93%',
+    cream: '350 20% 96%',
+    preview: 'bg-[hsl(350,35%,65%)]' 
+  },
+  { 
+    id: 'sage', 
+    name: 'Quiet Sage', 
+    primary: '140 25% 55%', 
+    accent: '100 20% 75%', 
+    background: '140 20% 96%',
+    card: '140 18% 95%',
+    muted: '140 15% 92%',
+    cream: '140 18% 95%',
+    preview: 'bg-[hsl(140,25%,55%)]' 
+  },
 ];
 
 interface ThemePickerProps {
@@ -30,9 +102,13 @@ export const ThemePicker = ({ isOpen, onToggle, onThemeChange }: ThemePickerProp
   const handleThemeSelect = (theme: Theme) => {
     setSelectedTheme(theme.id);
     
-    // Apply theme to CSS variables
+    // Apply theme to CSS variables - including background
     document.documentElement.style.setProperty('--primary', theme.primary);
     document.documentElement.style.setProperty('--accent', theme.accent);
+    document.documentElement.style.setProperty('--background', theme.background);
+    document.documentElement.style.setProperty('--card', theme.card);
+    document.documentElement.style.setProperty('--muted', theme.muted);
+    document.documentElement.style.setProperty('--cream', theme.cream);
     
     onThemeChange?.(theme);
   };

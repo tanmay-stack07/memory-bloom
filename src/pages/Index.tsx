@@ -7,6 +7,7 @@ import { MoodPicker } from '@/components/MoodPicker';
 import { PolaroidCard } from '@/components/PolaroidCard';
 import { CameraView } from '@/components/CameraView';
 import { PhotoEditor } from '@/components/PhotoEditor';
+import { FilmStripExport } from '@/components/FilmStripExport';
 
 interface Photo {
   id: string;
@@ -154,9 +155,12 @@ const Index = () => {
         {/* Captured photos gallery */}
         {capturedPhotos.length > 0 && (
           <div className="w-full max-w-4xl animate-fade-in-up">
-            <h2 className="font-handwriting text-2xl text-foreground mb-6 text-center">
-              Your Memories
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-handwriting text-2xl text-foreground">
+                Your Memories
+              </h2>
+              <FilmStripExport photos={capturedPhotos} />
+            </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
               {capturedPhotos.map((photo, index) => (

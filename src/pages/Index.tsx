@@ -1,26 +1,84 @@
 import { useState } from 'react';
-import { Camera, Sparkles, Heart } from 'lucide-react';
+import { Camera, Sparkles, Heart, Pencil } from 'lucide-react';
 import { FloatingElements } from '@/components/FloatingElements';
 import { CameraIcon } from '@/components/CameraIcon';
 import { ThemePicker } from '@/components/ThemePicker';
 import { MoodPicker } from '@/components/MoodPicker';
 import { PolaroidCard } from '@/components/PolaroidCard';
 import { CameraView } from '@/components/CameraView';
+import { PhotoEditor } from '@/components/PhotoEditor';
+
+interface Photo {
+  id: string;
+  imageUrl: string;
+  caption?: string;
+  mood?: string;
+}
 
 const Index = () => {
   const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
-  const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
+  const [capturedPhotos, setCapturedPhotos] = useState<Photo[]>([]);
+  
+  // Editor state
+  const [editingPhoto, setEditingPhoto] = useState<Photo | null>(null);
+  const [pendingCaptureUrl, setPendingCaptureUrl] = useState<string | null>(null);
 
   const handleCapture = (imageDataUrl: string) => {
-    setCapturedPhotos(prev => [imageDataUrl, ...prev]);
+    // Open editor immediately after capture
+    setPendingCaptureUrl(imageDataUrl);
+  };
+
+  const handleEditorSave = (editedImageUrl: string, caption: string) => {
+    if (pendingCaptureUrl) {
+      // New photo from camera
+      const newPhoto: Photo = {
+        id: Date.now().toString(),
+        imageUrl: editedImageUrl,
+        caption: caption || undefined,
+        mood: selectedMood || undefined,
+      };
+      setCapturedPhotos(prev => [newPhoto, ...prev]);
+      setPendingCaptureUrl(null);
+    } else if (editingPhoto) {
+      // Editing existing photo
+      setCapturedPhotos(prev => 
+        prev.map(p => 
+          p.id === editingPhoto.id 
+            ? { ...p, imageUrl: editedImageUrl, caption: caption || undefined }
+            : p
+        )
+      );
+      setEditingPhoto(null);
+    }
+  };
+
+  const handleEditorClose = () => {
+    if (pendingCaptureUrl) {
+      // Save without edits
+      const newPhoto: Photo = {
+        id: Date.now().toString(),
+        imageUrl: pendingCaptureUrl,
+        mood: selectedMood || undefined,
+      };
+      setCapturedPhotos(prev => [newPhoto, ...prev]);
+      setPendingCaptureUrl(null);
+    }
+    setEditingPhoto(null);
+  };
+
+  const handleEditPhoto = (photo: Photo) => {
+    setEditingPhoto(photo);
   };
 
   const getMoodClass = () => {
     if (!selectedMood) return '';
     return `mood-${selectedMood}`;
   };
+
+  const isEditorOpen = !!pendingCaptureUrl || !!editingPhoto;
+  const editorImageUrl = pendingCaptureUrl || editingPhoto?.imageUrl || '';
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -103,16 +161,23 @@ const Index = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
               {capturedPhotos.map((photo, index) => (
                 <div 
-                  key={index}
-                  className="animate-scale-in"
+                  key={photo.id}
+                  className="relative group animate-scale-in"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <PolaroidCard
-                    imageUrl={photo}
+                    imageUrl={photo.imageUrl}
                     rotation={(Math.random() - 0.5) * 6}
-                    mood={getMoodClass()}
-                    caption={index === 0 ? 'Just now ✨' : undefined}
+                    mood={photo.mood ? `mood-${photo.mood}` : getMoodClass()}
+                    caption={photo.caption}
+                    onClick={() => handleEditPhoto(photo)}
                   />
+                  {/* Edit overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <div className="bg-foreground/60 rounded-full p-3">
+                      <Pencil className="w-5 h-5 text-background" />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -171,6 +236,14 @@ const Index = () => {
         isOpen={isCameraOpen}
         onClose={() => setIsCameraOpen(false)}
         onCapture={handleCapture}
+      />
+
+      {/* Photo Editor */}
+      <PhotoEditor
+        imageUrl={editorImageUrl}
+        isOpen={isEditorOpen}
+        onClose={handleEditorClose}
+        onSave={handleEditorSave}
       />
 
       {/* Click outside to close theme picker */}

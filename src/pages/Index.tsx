@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Camera, Sparkles, Heart, Pencil } from 'lucide-react';
+import { Camera, Sparkles, Heart, Pencil, Trash2 } from 'lucide-react';
 import { FloatingElements } from '@/components/FloatingElements';
 import { CameraIcon } from '@/components/CameraIcon';
 import { ThemePicker } from '@/components/ThemePicker';
@@ -7,7 +7,9 @@ import { MoodPicker } from '@/components/MoodPicker';
 import { PolaroidCard } from '@/components/PolaroidCard';
 import { CameraView } from '@/components/CameraView';
 import { PhotoEditor } from '@/components/PhotoEditor';
-import { FilmStripExport } from '@/components/FilmStripExport';
+import { FilmStudio } from '@/components/FilmStudio';
+import { Button } from '@/components/ui/button';
+import { Film } from 'lucide-react';
 
 interface Photo {
   id: string;
@@ -19,6 +21,7 @@ interface Photo {
 const Index = () => {
   const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isFilmStudioOpen, setIsFilmStudioOpen] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [capturedPhotos, setCapturedPhotos] = useState<Photo[]>([]);
   
@@ -27,13 +30,11 @@ const Index = () => {
   const [pendingCaptureUrl, setPendingCaptureUrl] = useState<string | null>(null);
 
   const handleCapture = (imageDataUrl: string) => {
-    // Open editor immediately after capture
     setPendingCaptureUrl(imageDataUrl);
   };
 
   const handleEditorSave = (editedImageUrl: string, caption: string) => {
     if (pendingCaptureUrl) {
-      // New photo from camera
       const newPhoto: Photo = {
         id: Date.now().toString(),
         imageUrl: editedImageUrl,
@@ -43,7 +44,6 @@ const Index = () => {
       setCapturedPhotos(prev => [newPhoto, ...prev]);
       setPendingCaptureUrl(null);
     } else if (editingPhoto) {
-      // Editing existing photo
       setCapturedPhotos(prev => 
         prev.map(p => 
           p.id === editingPhoto.id 
@@ -57,7 +57,6 @@ const Index = () => {
 
   const handleEditorClose = () => {
     if (pendingCaptureUrl) {
-      // Save without edits
       const newPhoto: Photo = {
         id: Date.now().toString(),
         imageUrl: pendingCaptureUrl,
@@ -73,6 +72,11 @@ const Index = () => {
     setEditingPhoto(photo);
   };
 
+  const handleDeletePhoto = (photoId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCapturedPhotos(prev => prev.filter(p => p.id !== photoId));
+  };
+
   const getMoodClass = () => {
     if (!selectedMood) return '';
     return `mood-${selectedMood}`;
@@ -82,14 +86,10 @@ const Index = () => {
   const editorImageUrl = pendingCaptureUrl || editingPhoto?.imageUrl || '';
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Ambient floating elements */}
+    <div className="min-h-screen bg-background relative overflow-hidden transition-colors duration-500">
       <FloatingElements />
-
-      {/* Film grain overlay */}
       <div className="fixed inset-0 pointer-events-none film-grain z-10" />
 
-      {/* Header */}
       <header className="relative z-20 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Heart className="w-5 h-5 text-accent fill-accent" />
@@ -108,9 +108,7 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Main content */}
       <main className="relative z-20 flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-6 pb-12">
-        {/* Hero section */}
         <div className="text-center mb-12 animate-fade-in-up">
           <h1 className="font-handwriting text-5xl md:text-7xl text-foreground mb-4">
             Craft Your Memories
@@ -120,21 +118,17 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Camera icon - Main CTA */}
         <div 
           className="relative w-40 h-32 md:w-52 md:h-40 mb-12 cursor-pointer group animate-fade-in-up delay-200"
           onClick={() => setIsCameraOpen(true)}
         >
           <CameraIcon className="w-full h-full transition-transform duration-gentle group-hover:scale-105" />
-          
-          {/* Click prompt */}
           <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 text-sm text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
             <Camera className="w-4 h-4" />
             <span>Click to capture</span>
           </div>
         </div>
 
-        {/* Feature hints */}
         <div className="flex flex-wrap justify-center gap-4 mb-16 animate-fade-in-up delay-400">
           {[
             { icon: Camera, label: 'Photobooth' },
@@ -152,14 +146,21 @@ const Index = () => {
           ))}
         </div>
 
-        {/* Captured photos gallery */}
         {capturedPhotos.length > 0 && (
           <div className="w-full max-w-4xl animate-fade-in-up">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-handwriting text-2xl text-foreground">
                 Your Memories
               </h2>
-              <FilmStripExport photos={capturedPhotos} />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsFilmStudioOpen(true)}
+                className="gap-2 bg-card/80 backdrop-blur-sm border-border/50 hover:bg-card"
+              >
+                <Film className="w-4 h-4" />
+                Export as Film
+              </Button>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
@@ -176,10 +177,15 @@ const Index = () => {
                     caption={photo.caption}
                     onClick={() => handleEditPhoto(photo)}
                   />
-                  {/* Edit overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    <div className="bg-foreground/60 rounded-full p-3">
+                  <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <div className="bg-foreground/60 rounded-full p-3 pointer-events-auto cursor-pointer" onClick={() => handleEditPhoto(photo)}>
                       <Pencil className="w-5 h-5 text-background" />
+                    </div>
+                    <div 
+                      className="bg-destructive/80 rounded-full p-3 pointer-events-auto cursor-pointer hover:bg-destructive transition-colors"
+                      onClick={(e) => handleDeletePhoto(photo.id, e)}
+                    >
+                      <Trash2 className="w-5 h-5 text-destructive-foreground" />
                     </div>
                   </div>
                 </div>
@@ -188,7 +194,6 @@ const Index = () => {
           </div>
         )}
 
-        {/* Empty state with sample polaroids */}
         {capturedPhotos.length === 0 && (
           <div className="flex flex-wrap justify-center gap-8 animate-fade-in-up delay-500">
             <PolaroidCard 
@@ -228,34 +233,16 @@ const Index = () => {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="relative z-20 text-center py-6 text-sm text-muted-foreground">
-        <p className="font-handwriting text-lg">
-          Made with quiet moments in mind
-        </p>
+        <p className="font-handwriting text-lg">Made with quiet moments in mind</p>
       </footer>
 
-      {/* Camera View */}
-      <CameraView
-        isOpen={isCameraOpen}
-        onClose={() => setIsCameraOpen(false)}
-        onCapture={handleCapture}
-      />
+      <CameraView isOpen={isCameraOpen} onClose={() => setIsCameraOpen(false)} onCapture={handleCapture} />
+      <PhotoEditor imageUrl={editorImageUrl} isOpen={isEditorOpen} onClose={handleEditorClose} onSave={handleEditorSave} />
+      <FilmStudio photos={capturedPhotos} isOpen={isFilmStudioOpen} onClose={() => setIsFilmStudioOpen(false)} />
 
-      {/* Photo Editor */}
-      <PhotoEditor
-        imageUrl={editorImageUrl}
-        isOpen={isEditorOpen}
-        onClose={handleEditorClose}
-        onSave={handleEditorSave}
-      />
-
-      {/* Click outside to close theme picker */}
       {isThemePickerOpen && (
-        <div 
-          className="fixed inset-0 z-30" 
-          onClick={() => setIsThemePickerOpen(false)} 
-        />
+        <div className="fixed inset-0 z-30" onClick={() => setIsThemePickerOpen(false)} />
       )}
     </div>
   );

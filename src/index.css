@@ -4,38 +4,44 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
 @layer base {
   :root {
     /* Maith - Warm, Film-Inspired Palette */
-    --background: 36 33% 97%;
-    --foreground: 30 10% 25%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
 
-    --card: 40 30% 96%;
-    --card-foreground: 30 10% 25%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
 
-    --popover: 40 30% 98%;
-    --popover-foreground: 30 10% 25%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 24 60% 65%;
-    --primary-foreground: 40 30% 98%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 200 30% 85%;
-    --secondary-foreground: 30 10% 25%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 36 20% 92%;
-    --muted-foreground: 30 10% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 340 35% 75%;
-    --accent-foreground: 30 10% 25%;
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 0%;
 
-    --destructive: 0 50% 60%;
-    --destructive-foreground: 40 30% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 36 20% 88%;
-    --input: 36 20% 90%;
-    --ring: 24 60% 65%;
+    --border: 0 0% 0%;
+    --input: 0 0% 0%;
+    --ring: 0 0% 0%;
 
-    --radius: 1rem;
+    --radius: 0rem;
 
     /* Maith Custom Tokens */
     --cream: 40 30% 96%;
@@ -62,43 +68,62 @@
     --transition-breath: 4s ease-in-out infinite;
 
     --sidebar-background: 40 30% 96%;
-    --sidebar-foreground: 30 10% 25%;
-    --sidebar-primary: 24 60% 65%;
-    --sidebar-primary-foreground: 40 30% 98%;
-    --sidebar-accent: 36 20% 92%;
-    --sidebar-accent-foreground: 30 10% 25%;
-    --sidebar-border: 36 20% 88%;
-    --sidebar-ring: 24 60% 65%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 0 0% 0%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 90%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 0%;
+    --sidebar-ring: 0 0% 0%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --sidebar: 0 0% 98%;
+    --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --shadow-2xs: 1px 1px 0px 0px #000000;
+    --shadow-xs: 2px 2px 0px 0px #000000;
+    --shadow-sm: 3px 3px 0px 0px #000000;
+    --shadow: 5px 5px 0px 0px #000000;
+    --shadow-md: 8px 8px 0px 0px #000000;
+    --shadow-lg: 12px 12px 0px 0px #000000;
+    --shadow-xl: 16px 16px 0px 0px #000000;
+    --shadow-2xl: 24px 24px 0px 0px #000000;
+    --tracking-normal: 0em;
+    --spacing: 0.25rem;
   }
 
   .dark {
-    --background: 30 15% 12%;
-    --foreground: 40 25% 90%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 30 15% 15%;
-    --card-foreground: 40 25% 90%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 30 15% 15%;
-    --popover-foreground: 40 25% 90%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 24 50% 55%;
-    --primary-foreground: 30 15% 10%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 200 20% 25%;
-    --secondary-foreground: 40 25% 90%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 30 15% 20%;
-    --muted-foreground: 40 20% 60%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 340 25% 45%;
-    --accent-foreground: 40 25% 90%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 45% 45%;
-    --destructive-foreground: 40 25% 90%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 30 15% 22%;
-    --input: 30 15% 22%;
-    --ring: 24 50% 55%;
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+    --ring: 0 0% 100%;
 
     --cream: 30 15% 18%;
     --cream-dark: 30 15% 14%;
@@ -111,13 +136,28 @@
     --glow-warm: 24 60% 45%;
 
     --sidebar-background: 30 15% 15%;
-    --sidebar-foreground: 40 25% 90%;
-    --sidebar-primary: 24 50% 55%;
-    --sidebar-primary-foreground: 30 15% 10%;
-    --sidebar-accent: 30 15% 20%;
-    --sidebar-accent-foreground: 40 25% 90%;
-    --sidebar-border: 30 15% 22%;
-    --sidebar-ring: 24 50% 55%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 100%;
+    --sidebar-ring: 0 0% 100%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar: 0 0% 5%;
+    --radius: 0rem;
+    --shadow-2xs: 1px 1px 0px 0px #ffffff;
+    --shadow-xs: 2px 2px 0px 0px #ffffff;
+    --shadow-sm: 3px 3px 0px 0px #ffffff;
+    --shadow: 5px 5px 0px 0px #ffffff;
+    --shadow-md: 8px 8px 0px 0px #ffffff;
+    --shadow-lg: 12px 12px 0px 0px #ffffff;
+    --shadow-xl: 16px 16px 0px 0px #ffffff;
+    --shadow-2xl: 24px 24px 0px 0px #ffffff;
   }
 }
 
@@ -141,7 +181,7 @@
   .film-grain {
     position: relative;
   }
-  
+
   .film-grain::after {
     content: '';
     position: absolute;
